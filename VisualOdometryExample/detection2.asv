@@ -1,0 +1,28 @@
+% Detection des points d'intérêts (méthode SURF)
+clear;
+close all;
+clc;
+
+% On commence par importer nos images
+images = imageDatastore('/home/yska/Documents/Cours 3A/Perception pour la robotique/Projet/flumin');
+k=1;
+
+figure
+
+for i = 8:1:22
+    subplot(4,4,k)
+    hold on
+    I1 = rgb2gray(readimage(images, i));
+    I2 = rgb2gray(readimage(images, i+1));
+    points1 = detectKAZEFeatures(I1);
+    points2 = detectSURFFeatures(I2);
+    [f1,vpts1] = extractFeatures(I1,points1);
+    [f2,vpts2] = extractFeatures(I2,points2);
+    
+    indexPairs = matchFeatures(f1,f2) ;
+    matchedPoints1 = vpts1(indexPairs(:,1));
+    matchedPoints2 = vpts2(indexPairs(:,2));
+    showMatchedFeatures(I1,I2,matchedPoints1,matchedPoints2);
+    legend('matched points 1','matched points 2');
+    k=k+1
+end
